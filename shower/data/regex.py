@@ -59,7 +59,7 @@ class DataRegex(Data):
                 self._add_to_results(results, row[self.instance], row)
         else:
             parsed = self._parse_line(output)
-            self._add_to_results(results, '0', row)
+            self._add_to_results(results, '0', parsed)
         return results
 
     def _add_to_results(self, results, instance, matches):
@@ -78,8 +78,9 @@ class DataRegex(Data):
         m = self.regex.search(line)
         self.log('info', repr(self.regex.pattern))
         self.log('info', repr(line))
-        self.log('info', repr(m))
         if m:
+            self.log('info', repr(m.groupdict()))
             return m.groupdict()
         else:
+            self.log('info', repr(None))
             return None
