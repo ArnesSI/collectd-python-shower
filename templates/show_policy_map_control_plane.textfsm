@@ -1,0 +1,75 @@
+# Command: show policy-map control-plane
+#
+# You'll need to add the following to collectd's types.db:
+#
+# # shower / show_policy_map_control_plane.textfsm
+# packets                 value:DERIVE:0:U
+# cir_bps                 value:GAUGE:0:U
+# bc_bytes                value:DERIVE:0:U
+# conformed_bytes         value:DERIVE:0:U
+# conformed_bps           value:GAUGE:0:U
+# exceeded_bytes          value:DERIVE:0:U
+# exceeded_bps            value:GAUGE:0:U
+#
+Value type_instance (\S+)
+Value packets (\d+)
+Value cir_bps (\d+)
+Value bc_bytes (\d+)
+Value conformed_bytes (\d+)
+Value conformed_bps (\d+)
+Value exceeded_bytes (\d+)
+Value exceeded_bps (\d+)
+
+
+Start
+  ^\s+Class-map: ${type_instance} \(.*\)
+  ^\s+${packets} packets
+  ^\s+Match: access-group name .*
+  ^\s+police:
+  ^\s+cir ${cir_bps} bps, bc ${bc_bytes} bytes
+  ^\s+conformed ${conformed_bytes} bytes; actions:
+  ^\s+transmit
+  ^\s+exceeded ${exceeded_bytes} bytes; actions:
+  ^\s+drop
+  ^\s+conformed ${conformed_bps} bps, exceeded ${exceeded_bps} bps -> Record
+
+################################################################################
+# Sample output:
+#
+# Control Plane
+#
+#  Service-policy input: my-copp-policy
+#
+#    Class-map: copp-class-management (match-all)
+#      16228 packets
+#      Match: access-group name copp-class-management
+#      police:
+#          cir 1000000 bps, bc 31250 bytes
+#        conformed 1784239 bytes; actions:
+#          transmit
+#        exceeded 0 bytes; actions:
+#          drop
+#        conformed 1000 bps, exceeded 0000 bps
+#
+#    Class-map: copp-class-services (match-all)
+#      3999 packets
+#      Match: access-group name copp-class-services
+#      police:
+#          cir 1000000 bps, bc 31250 bytes
+#        conformed 391970 bytes; actions:
+#          transmit
+#        exceeded 0 bytes; actions:
+#          drop
+#        conformed 0000 bps, exceeded 0000 bps
+#
+#    Class-map: class-default (match-any)
+#      45305267 packets
+#      Match: any
+#      police:
+#          cir 32000 bps, bc 1500 bytes
+#        conformed 999290299 bytes; actions:
+#          transmit
+#        exceeded 6643115187 bytes; actions:
+#          drop
+#        conformed 20000 bps, exceeded 0000 bps
+#

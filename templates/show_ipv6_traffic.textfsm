@@ -1,0 +1,144 @@
+Value ipv6_rcvd_total (\d+)
+Value ipv6_rcvd_local_destination (\d+)
+Value ipv6_rcvd_source_routed (\d+)
+Value ipv6_rcvd_truncated (\d+)
+Value ipv6_rcvd_format_err (\d+)
+Value ipv6_rcvd_hop_count_exceeded (\d+)
+Value ipv6_rcvd_bad_header (\d+)
+Value ipv6_rcvd_unknown_option (\d+)
+Value ipv6_rcvd_bad_source (\d+)
+Value ipv6_rcvd_unknown_protocol (\d+)
+Value ipv6_rcvd_not_a_router (\d+)
+Value ipv6_rcvd_fragments (\d+)
+Value ipv6_rcvd_total_reassembled (\d+)
+Value ipv6_rcvd_reassembly_timeouts (\d+)
+Value ipv6_rcvd_reassembly_failures (\d+)
+Value ipv6_sent_generated (\d+)
+Value ipv6_sent_forwarded (\d+)
+Value ipv6_sent_fragmented_into (\d+)
+Value ipv6_sent_fragments (\d+)
+Value ipv6_sent_failed (\d+)
+Value ipv6_sent_encapsulation_failed (\d+)
+Value ipv6_sent_no_route (\d+)
+Value ipv6_sent_too_big (\d+)
+Value ipv6_sent_rpf_drops (\d+)
+Value ipv6_sent_rpf_suppressed_drops (\d+)
+Value ipv6_mcast_received (\d+)
+Value ipv6_mcast_sent (\d+)
+Value icmpv6_rcvd_input (\d+)
+Value icmpv6_rcvd_checksum_err (\d+)
+Value icmpv6_rcvd_too_short (\d+)
+Value icmpv6_rcvd_unknown_info_type (\d+)
+Value icmpv6_rcvd_unknown_error_type (\d+)
+Value icmpv6_rcvd_unreach_routing (\d+)
+Value icmpv6_rcvd_unreach_admin (\d+)
+Value icmpv6_rcvd_unreach_neighbor (\d+)
+Value icmpv6_rcvd_unreach_address (\d+)
+Value icmpv6_rcvd_unreach_port (\d+)
+Value icmpv6_rcvd_unreach_sa_policy (\d+)
+Value icmpv6_rcvd_unreach_reject_route (\d+)
+Value icmpv6_rcvd_parameter_err (\d+)
+Value icmpv6_rcvd_parameter_header (\d+)
+Value icmpv6_rcvd_parameter_option (\d+)
+Value icmpv6_rcvd_hopcount_expired (\d+)
+Value icmpv6_rcvd_reassembly_timeout (\d+)
+Value icmpv6_rcvd_too_big (\d+)
+Value icmpv6_rcvd_bad_embedded_ipv6 (\d+)
+Value icmpv6_rcvd_echo_request (\d+)
+Value icmpv6_rcvd_echo_reply (\d+)
+Value icmpv6_rcvd_group_query (\d+)
+Value icmpv6_rcvd_group_report (\d+)
+Value icmpv6_rcvd_group_reduce (\d+)
+Value icmpv6_rcvd_router_solicit (\d+)
+Value icmpv6_rcvd_router_advert (\d+)
+Value icmpv6_rcvd_redirects (\d+)
+Value icmpv6_rcvd_neighbor_solicit (\d+)
+Value icmpv6_rcvd_neighbor_advert (\d+)
+Value icmpv6_sent_output (\d+)
+Value icmpv6_sent_rate_limited (\d+)
+Value icmpv6_sent_unreach_routing (\d+)
+Value icmpv6_sent_unreach_admin (\d+)
+Value icmpv6_sent_unreach_neighbor (\d+)
+Value icmpv6_sent_unreach_address (\d+)
+Value icmpv6_sent_unreach_port (\d+)
+Value icmpv6_sent_unreach_sa_policy (\d+)
+Value icmpv6_sent_unreach_reject_route (\d+)
+Value icmpv6_sent_parameter_err (\d+)
+Value icmpv6_sent_parameter_header (\d+)
+Value icmpv6_sent_parameter_option (\d+)
+Value icmpv6_sent_hopcount_expired (\d+)
+Value icmpv6_sent_reassembly_timeout (\d+)
+Value icmpv6_sent_too_big (\d+)
+Value icmpv6_sent_echo_request (\d+)
+Value icmpv6_sent_echo_reply (\d+)
+Value icmpv6_sent_group_query (\d+)
+Value icmpv6_sent_group_report (\d+)
+Value icmpv6_sent_group_reduce (\d+)
+Value icmpv6_sent_router_solicit (\d+)
+Value icmpv6_sent_router_advert (\d+)
+Value icmpv6_sent_redirects (\d+)
+Value icmpv6_sent_neighbor_solicit (\d+)
+Value icmpv6_sent_neighbor_advert (\d+)
+Value udpv6_rcvd_input (\d+)
+Value udpv6_rcvd_checksum_err (\d+)
+Value udpv6_rcvd_length_errors (\d+)
+Value udpv6_rcvd_no_port (\d+)
+Value udpv6_rcvd_dropped (\d+)
+Value udpv6_sent_output (\d+)
+Value tcpv6_rcvd_input (\d+)
+Value tcpv6_rcvd_checksum_errors (\d+)
+Value tcpv6_sent_output (\d+)
+Value tcpv6_sent_retransmitted (\d+)
+
+Start 
+  ^IPv6 statistics: -> IPv6
+  ^ICMP statistics: -> ICMP
+  ^UDP statistics: -> UDP
+  ^TCP statistics: -> TCP
+  
+IPv6
+  ^\s+Rcvd:\s+${ipv6_rcvd_total} total, ${ipv6_rcvd_local_destination} local destination
+  ^\s+${ipv6_rcvd_source_routed} source-routed, ${ipv6_rcvd_truncated} truncated
+  ^\s+${ipv6_rcvd_format_err} format errors, ${ipv6_rcvd_hop_count_exceeded} hop count exceeded
+  ^\s+${ipv6_rcvd_bad_header} bad header, ${ipv6_rcvd_unknown_option} unknown option, ${ipv6_rcvd_bad_source} bad source
+  ^\s+${ipv6_rcvd_unknown_protocol} unknown protocol, ${ipv6_rcvd_not_a_router} not a router
+  ^\s+${ipv6_rcvd_fragments} fragments, ${ipv6_rcvd_total_reassembled} total reassembled
+  ^\s+${ipv6_rcvd_reassembly_timeouts} reassembly timeouts, ${ipv6_rcvd_reassembly_failures} reassembly failures
+  ^\s+Sent:  ${ipv6_sent_generated} generated, ${ipv6_sent_forwarded} forwarded
+  ^\s+${ipv6_sent_fragmented_into} fragmented into ${ipv6_sent_fragments} fragments, ${ipv6_sent_failed} failed
+  ^\s+${ipv6_sent_encapsulation_failed} encapsulation failed, ${ipv6_sent_no_route} no route, ${ipv6_sent_too_big} too big
+  ^\s+${ipv6_sent_rpf_drops} RPF drops, ${ipv6_sent_rpf_suppressed_drops} RPF suppressed drops
+  ^\s+Mcast: ${ipv6_mcast_received} received, ${ipv6_mcast_sent} sent -> Start
+
+ICMP
+  ^\s+Rcvd: ${icmpv6_rcvd_input} input, ${icmpv6_rcvd_checksum_err} checksum errors, ${icmpv6_rcvd_too_short} too short
+  ^\s+${icmpv6_rcvd_unknown_info_type} unknown info type, ${icmpv6_rcvd_unknown_error_type} unknown error type
+  ^\s+unreach: ${icmpv6_rcvd_unreach_routing} routing, ${icmpv6_rcvd_unreach_admin} admin, ${icmpv6_rcvd_unreach_neighbor} neighbor, ${icmpv6_rcvd_unreach_address} address, ${icmpv6_rcvd_unreach_port} port
+  ^\s+${icmpv6_rcvd_unreach_sa_policy} sa policy, ${icmpv6_rcvd_unreach_reject_route} reject route
+  ^\s+parameter: ${icmpv6_rcvd_parameter_err} error, ${icmpv6_rcvd_parameter_header} header, ${icmpv6_rcvd_parameter_option} option
+  ^\s+${icmpv6_rcvd_hopcount_expired} hopcount expired, ${icmpv6_rcvd_reassembly_timeout} reassembly timeout,${icmpv6_rcvd_too_big} too big
+  ^\s+${icmpv6_rcvd_bad_embedded_ipv6} bad embedded ipv6
+  ^\s+${icmpv6_rcvd_echo_request} echo request, ${icmpv6_rcvd_echo_reply} echo reply
+  ^\s+${icmpv6_rcvd_group_query} group query, ${icmpv6_rcvd_group_report} group report, ${icmpv6_rcvd_group_reduce} group reduce
+  ^\s+${icmpv6_rcvd_router_solicit} router solicit, ${icmpv6_rcvd_router_advert} router advert, ${icmpv6_rcvd_redirects} redirects
+  ^\s+${icmpv6_rcvd_neighbor_solicit} neighbor solicit, ${icmpv6_rcvd_neighbor_advert} neighbor advert -> ICMP_Sent
+
+ICMP_Sent  
+  ^\s+Sent: ${icmpv6_sent_output} output, ${icmpv6_sent_rate_limited} rate-limited
+  ^\s+unreach: ${icmpv6_sent_unreach_routing} routing, ${icmpv6_sent_unreach_admin} admin, ${icmpv6_sent_unreach_neighbor} neighbor, ${icmpv6_sent_unreach_address} address, ${icmpv6_sent_unreach_port} port
+  ^\s+${icmpv6_sent_unreach_sa_policy} sa policy, ${icmpv6_sent_unreach_reject_route} reject route
+  ^\s+parameter: ${icmpv6_sent_parameter_err} error, ${icmpv6_sent_parameter_header} header, ${icmpv6_sent_parameter_option} option
+  ^\s+${icmpv6_sent_hopcount_expired} hopcount expired, ${icmpv6_sent_reassembly_timeout} reassembly timeout,${icmpv6_sent_too_big} too big
+  ^\s+${icmpv6_sent_echo_request} echo request, ${icmpv6_sent_echo_reply} echo reply
+  ^\s+${icmpv6_sent_group_query} group query, ${icmpv6_sent_group_report} group report, ${icmpv6_sent_group_reduce} group reduce
+  ^\s+${icmpv6_sent_router_solicit} router solicit, ${icmpv6_sent_router_advert} router advert, ${icmpv6_sent_redirects} redirects
+  ^\s+${icmpv6_sent_neighbor_solicit} neighbor solicit, ${icmpv6_sent_neighbor_advert} neighbor advert -> Start
+
+UDP
+  ^\s+Rcvd: ${udpv6_rcvd_input} input, ${udpv6_rcvd_checksum_err} checksum errors, ${udpv6_rcvd_length_errors} length errors
+  ^\s+${udpv6_rcvd_no_port} no port, ${udpv6_rcvd_dropped} dropped
+  ^\s+Sent: ${udpv6_sent_output} output -> Start
+  
+TCP
+  ^\s+Rcvd: ${tcpv6_rcvd_input} input, ${tcpv6_rcvd_checksum_errors} checksum errors
+  ^\s+Sent: ${tcpv6_sent_output} output, ${tcpv6_sent_retransmitted} retransmitted -> Start

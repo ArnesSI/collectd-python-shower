@@ -26,6 +26,7 @@
 
 from ..exceptions import ShowerConfigException
 from .regex import DataRegex
+from .template import DataTextFSM
 
 def make_data(conf):
     style = get_style(conf)
@@ -33,6 +34,8 @@ def make_data(conf):
         raise ShowerConfigException('Missing Style in Data "{}" section'.format(conf.values[0]))
     elif style == 'regex':
         return DataRegex(conf)
+    elif style == 'textfsm':
+        return DataTextFSM(conf)
     else:
         raise ShowerConfigException('Unsupported Style "{}" in Data "{}" section'.format(style, conf.values[0]))
 

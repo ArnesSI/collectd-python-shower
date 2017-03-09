@@ -1,0 +1,122 @@
+# -*- coding: utf-8 -*-
+########################################################################
+#
+# MIT License
+#
+# Copyright (c) 2017 Matej Vadnjal <matej@arnes.si>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+########################################################################
+
+import os
+import re
+from ..exceptions import ShowerConfigException
+from .data import Data
+
+
+class DataTextFSM(Data):
+    def __init__(self, conf):
+        self.template = None
+        self.templatedir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir, 'templates'))
+        self.template_path = None # full absolute path to the textfsm template
+        self.command = None
+        self.typeoverride = None
+        self._textfsm = None
+        super(DataTextFSM, self).__init__(conf)
+        self._read_command()
+        self._textfsm_init()
+
+    def _from_conf(self, conf):
+        super(DataTextFSM, self)._from_conf(conf)
+        for node in conf.children:
+            key = node.key.lower()
+            if key in ['template', 'command', 'typeoverride']:
+                setattr(self, key, str(node.values[0]))
+        # get TemplateDir from parent conf
+        for node in conf.parent.children:
+            key = node.key.lower()
+            if key == 'templatedir':
+                setattr(self, key, str(node.values[0]))
+
+    def _validate(self):
+        super(DataTextFSM, self)._validate()
+        if not self.template:
+            raise ShowerConfigException('Missing Template in Data "{}" section'.format(self.name))
+        self.template_path = os.path.join(self.templatedir, self.template)
+        if not os.path.isfile(self.template_path):
+            raise ShowerConfigException('Template does not exist or not readable "{}" in Data "{}"'.format(self.template_path, self.name))
+
+    def _read_command(self):
+        if self.command:
+            # don't search if set in collectd config file
+            return
+        with open(self.template_path, 'r') as fh:
+            for line in fh:
+                if line.startswith('Value ') and not self.command:
+                    raise ShowerConfigException('Command not found in TextFSM template "{}" in Data "{}"'.format(self.template_path, self.name))
+                m = re.search(r'^#\s*[Cc]ommand:\s+(.+?)\s*$', line)
+                if m:
+                    self.command = m.group(1)
+        if not self.command:
+            raise ShowerConfigException('Command not found in TextFSM template "{}" in Data "{}"'.format(self.template_path, self.name))
+
+    def _textfsm_init(self):
+        try:
+            from textfsm import TextFSM
+        except ImportError as e:
+            self.log('error', 'You\'ll need to install textfsm Python module to use textfsm style parsing.')
+            raise
+        else:
+            self._textfsm = TextFSM(open(self.template_path))
+            if 'type_instance' in self._textfsm.header:
+                # if we have a special Value called type_instance, we expect to
+                # have a table of results
+                self.table = True
+
+    def parse(self, output):
+        self._textfsm.ParseText(output)
+        return self._textfsm_to_dict()
+
+    def _textfsm_to_dict(self):
+        results = {}
+        # Convert TextFSM object to list of dictionaries (by Kirk Byers)
+        temp_dict = None
+        for row in self._textfsm._result:
+            temp_dict = {}
+            for index, element in enumerate(row):
+                header = self._textfsm.header[index].lower()
+                if header == 'type_instance':
+                    results[str(element)] = temp_dict
+                else:
+                    temp_dict[header] = float(element)
+        if not results and temp_dict:
+            # if no Variable named type_instance, only one record returned
+            # place it under key '0'
+            results['0'] = temp_dict
+        if self.typeoverride:
+            self.table = True
+            # if user set TypeOverride in the config, we can only support one
+            # result from textfsm.
+            # We actually change type into type_instance and set type to value
+            # from config.
+            results = {}
+            for typ_inst, val in temp_dict.items():
+                results[typ_inst] = {self.typeoverride: val}
+        self.log('info', repr(results))
+        return results
