@@ -27,7 +27,7 @@
 import time
 import threading
 from .base import ShowerBase
-from .data import Data
+from .data import make_data
 from .host import Host
 from .exceptions import ShowerConfigException
 
@@ -54,7 +54,7 @@ class Shower(ShowerBase):
             elif key in ['verbose']:
                 setattr(self, key, bool(node.values[0]))
             elif key == 'data':
-                data = Data(node, verbose=self.verbose)
+                data = make_data(node)
                 self.datas[data.name] = data
             elif key == 'host':
                 host_confs.append(node)

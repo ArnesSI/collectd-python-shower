@@ -24,31 +24,37 @@
 # SOFTWARE.
 ########################################################################
 
-from .base import ShowerBase
-from .exceptions import ShowerConfigException
+from ..base import ShowerBase
+from ..exceptions import ShowerConfigException
 
 
 class Data(ShowerBase):
-    def __init__(self, conf, verbose=False):
-        super(Data, self).__init__(verbose)
-        self.name = str(conf.values[0])
-        self.command = None
+    def __init__(self, conf):
+        super(Data, self).__init__()
+        self.name = None
+        self.style = None
+        self.plugininstance = None
+        self.types = []
+        self.table = False
+        self.instance = None
+        self.result = {}
         self._from_conf(conf)
         self._validate()
 
     def _from_conf(self, conf):
+        self.name = conf.values[0]
         for node in conf.children:
             key = node.key.lower()
-            if key in ['command']:
+            if key in ['style', 'plugininstance', 'instance']:
                 setattr(self, key, str(node.values[0]))
+            elif key in ['types']:
+                setattr(self, key, node.values)
+            elif key in ['table', 'verbose']:
+                setattr(self, key, bool(node.values[0]))
 
     def _validate(self):
         if not self.name:
-            raise ShowerConfigException('Unnamed Data config section')
-        if not self.command:
-            raise ShowerConfigException('Mussing Command in Data "{}" section'.format(self.name))
+            raise ShowerConfigException('Unnamed Data section')
 
     def parse(self, output):
-        return None
-
-# vim: tabstop=4 shiftwidth=4 expandtab
+        raise NotImplementedError()
