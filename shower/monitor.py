@@ -75,7 +75,7 @@ class Shower(ShowerBase):
         for host in self.hosts:
             missing = [m for m in host.collect if m not in self.datas.keys()]
             if missing:
-                raise ShowerConfigException('The following collect values on host {} are not defined {}'.format(host.host, missing))
+                raise ShowerConfigException('The following collect values on host {} are not defined {}'.format(host.name, missing))
             host_datas = [self.datas[c] for c in host.collect]
             host.collect = host_datas
 

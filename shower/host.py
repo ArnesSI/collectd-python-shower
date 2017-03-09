@@ -35,7 +35,7 @@ from .exceptions import ShowerConfigException
 class Host(ShowerBase):
     def __init__(self, conf, global_conf={}):
         super(Host, self).__init__()
-        self.host = str(conf.values[0])
+        self.name = str(conf.values[0])
         self.address = None
         self.type = None
         self.collect = []
@@ -68,18 +68,18 @@ class Host(ShowerBase):
             # TODO ssh_key
 
     def _validate(self):
-        if not self.host:
+        if not self.name:
             raise ShowerConfigException('Unnamed Host config section')
         if self.address is None:
-            self.address = self.host
+            self.address = self.name
         # TODO ssh_key checking/loading
         if self.type not in netmiko_platforms:
-            raise ShowerConfigException('Device type "{}" not supported by netmiko [{}]'.format(self.type, self.host))
+            raise ShowerConfigException('Device type "{}" not supported by netmiko [{}]'.format(self.type, self.name))
         if self.interval < 1 or self.interval < self.global_interval or self.interval % self.global_interval:
             raise ShowerConfigException('Device interval "{}" must be a multiple fo globl interval'.format(self.interval))
 
     def connect(self):
-        self.log('info', 'connecting'.format(self.host))
+        self.log('info', 'connecting'.format(self.name))
         start = time.time()
         try:
             self.connection = ConnectHandler(
@@ -153,7 +153,7 @@ class Host(ShowerBase):
             return False
 
     def log(self, severity='info', message=''):
-        message = '[{}] {}'.format(self.host, message)
+        message = '[{}] {}'.format(self.name, message)
         return super(Host, self).log(severity, message)
 
 # vim: tabstop=4 shiftwidth=4 expandtab

@@ -66,7 +66,7 @@ class Data(ShowerBase):
     def _dispach_result(self, host, type_instance, result):
         for typ, value in result.items():
             val = collectd.Values()
-            val.host = host.host
+            val.host = host.name
             val.plugin = self.plugin_name
             val.type = typ
             val.values = [value]
