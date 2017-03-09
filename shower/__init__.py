@@ -35,7 +35,7 @@ else:
 
     def configure_callback(*args, **kwargs):
         """
-        This method is a workarount - collectd won't call a configure method that
+        This method is a workaround - collectd won't call a configure method that
         is not defined in this file
         """
         return nt.configure_callback(*args, **kwargs)
