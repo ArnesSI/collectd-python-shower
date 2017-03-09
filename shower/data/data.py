@@ -49,7 +49,7 @@ class Data(ShowerBase):
                 setattr(self, key, str(node.values[0]))
             elif key in ['types']:
                 setattr(self, key, node.values)
-            elif key in ['table', 'verbose']:
+            elif key in ['table', 'verbose', 'debug']:
                 setattr(self, key, bool(node.values[0]))
 
     def _validate(self):

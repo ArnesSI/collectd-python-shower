@@ -30,13 +30,14 @@ import collectd
 class ShowerBase(object):
     def __init__(self, verbose=False):
         self.verbose = verbose
+        self.debug = False
         self.plugin_name = 'shower'
 
     def log(self, severity='info', message=''):
         f = None
         if not message:
             return
-        if self.verbose and severity in ['info', 'debug']:
+        if (self.verbose or self.debug) and severity in ['info', 'debug']:
             f = getattr(collectd, severity)
         elif severity in ['error', 'warning', 'notice']:
             f = getattr(collectd, severity)
