@@ -121,6 +121,8 @@ class Host(ShowerBase):
                 break
             output = self.run_command(data.command)
             results = data.parse(output)
+            data.dispach(self, results)
+            self.log('info', repr(results))
 
     def run_command(self, command):
         try:

@@ -52,11 +52,21 @@ class DataRegex(Data):
             raise ShowerConfigException('Missing Regex in Data "{}" section'.format(self.name))
 
     def parse(self, output):
+        results = {}
         if self.table:
             parsed = self._parse_by_line(output)
+            for row in parsed:
+                self._add_to_results(results, row[self.instance], row)
         else:
-            parsed = [self._parse_line(output)]
-        self.log('info', str(parsed))
+            parsed = self._parse_line(output)
+            self._add_to_results(results, '0', row)
+        return results
+
+    def _add_to_results(self, results, instance, matches):
+        if not matches:
+            return
+        fields = {typ: float(matches[typ]) for typ in self.types}
+        results[instance] = fields
 
     def _parse_by_line(self, output):
         parsed = []
@@ -66,6 +76,9 @@ class DataRegex(Data):
 
     def _parse_line(self, line):
         m = self.regex.search(line)
+        self.log('info', repr(self.regex.pattern))
+        self.log('info', repr(line))
+        self.log('info', repr(m))
         if m:
             return m.groupdict()
         else:

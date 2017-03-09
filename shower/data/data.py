@@ -24,6 +24,7 @@
 # SOFTWARE.
 ########################################################################
 
+import collectd
 from ..base import ShowerBase
 from ..exceptions import ShowerConfigException
 
@@ -37,7 +38,6 @@ class Data(ShowerBase):
         self.types = []
         self.table = False
         self.instance = None
-        self.result = {}
         self._from_conf(conf)
         self._validate()
 
@@ -58,3 +58,21 @@ class Data(ShowerBase):
 
     def parse(self, output):
         raise NotImplementedError()
+
+    def dispach(self, host, results):
+        for type_instance, result in results.items():
+            self._dispach_result(host, type_instance, result)
+
+    def _dispach_result(self, host, type_instance, result):
+        for typ, value in result.items():
+            val = collectd.Values()
+            val.host = host.host
+            val.plugin = self.plugin_name
+            val.type = typ
+            val.values = [value]
+            if self.plugininstance:
+                val.plugin_instance = self.plugininstance
+            if self.table:
+                val.type_instance = type_instance
+            self.log('info', repr(val))
+            val.dispatch()
