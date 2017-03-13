@@ -120,9 +120,11 @@ class Host(ShowerBase):
             if not self.connected:
                 break
             output = self.run_command(data.command)
-            results = data.parse(output)
-            data.dispach(self, results)
-            self.log('info', repr(results))
+            try:
+                results = data.parse(output)
+                data.dispach(self, results)
+            except Exception as e:
+                self.log('error', 'Error parsing command output "{}": {}'.format(data.command, e))
 
     def run_command(self, command):
         try:
