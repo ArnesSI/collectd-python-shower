@@ -26,7 +26,7 @@
 
 import os
 import re
-from copy import copy
+from copy import deepcopy
 from ..exceptions import ShowerConfigException
 from .data import Data
 
@@ -109,7 +109,7 @@ class DataTextFSM(Data):
             self.table = True
 
     def parse(self, output):
-        this_tfsm = copy(self._textfsm)
+        this_tfsm = deepcopy(self._textfsm)
         this_tfsm.ParseText(output)
         return self._textfsm_to_dict(this_tfsm)
 
