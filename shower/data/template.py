@@ -26,6 +26,7 @@
 
 import os
 import re
+from copy import copy
 from ..exceptions import ShowerConfigException
 from .data import Data
 
@@ -103,19 +104,23 @@ class DataTextFSM(Data):
         except textfsm.TextFSMTemplateError as e:
             self.log('error', 'TextFSMTemplateError "{}" while parsing TextFSM template "{}" in Data "{}"'.format(e, self.template_fullpath, self.name))
             raise
+        if self.typeoverride:
+            # to signal to dispach method it needts to set type_instance
+            self.table = True
 
     def parse(self, output):
-        self._textfsm.ParseText(output)
-        return self._textfsm_to_dict()
+        this_tfsm = copy(self._textfsm)
+        this_tfsm.ParseText(output)
+        return self._textfsm_to_dict(this_tfsm)
 
-    def _textfsm_to_dict(self):
+    def _textfsm_to_dict(self, tfsm):
         results = {}
         # Convert TextFSM object to list of dictionaries (by Kirk Byers)
         temp_dict = None
-        for row in self._textfsm._result:
+        for row in tfsm._result:
             temp_dict = {}
             for index, element in enumerate(row):
-                header = self._textfsm.header[index].lower()
+                header = tfsm.header[index].lower()
                 if header == 'type_instance':
                     results[str(element)] = temp_dict
                 else:
@@ -125,7 +130,6 @@ class DataTextFSM(Data):
             # place it under key '0'
             results['0'] = temp_dict
         if self.typeoverride:
-            self.table = True
             # if user set TypeOverride in the config, we can only support one
             # result from textfsm.
             # We actually change type into type_instance and set type to value
