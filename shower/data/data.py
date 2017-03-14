@@ -27,6 +27,7 @@
 import collectd
 from ..base import ShowerBase
 from ..exceptions import ShowerConfigException
+from .. import formatters
 
 
 class Data(ShowerBase):
@@ -38,6 +39,7 @@ class Data(ShowerBase):
         self.types = []
         self.table = False
         self.instance = None
+        self.formatters = {}
         self._from_conf(conf)
         self._validate()
 
@@ -51,6 +53,8 @@ class Data(ShowerBase):
                 setattr(self, key, node.values)
             elif key in ['table', 'verbose', 'debug']:
                 setattr(self, key, bool(node.values[0]))
+            elif key == 'formatter':
+                self.formatters[node.values[0]] = node.values[1]
 
     def _validate(self):
         if not self.name:
@@ -59,12 +63,20 @@ class Data(ShowerBase):
     def parse(self, output):
         raise NotImplementedError()
 
+    def format_metric(self, typ, instance, value):
+        if typ in self.formatters.keys():
+            func = getattr(formatters, self.formatters[typ])
+        else:
+            func = float
+        return func(value)
+
     def dispach(self, host, results):
         for type_instance, result in results.items():
             self._dispach_result(host, type_instance, result)
 
     def _dispach_result(self, host, type_instance, result):
         for typ, value in result.items():
+            value = self.format_metric(typ, type_instance, value)
             val = collectd.Values()
             val.host = host.name
             val.plugin = self.plugin_name

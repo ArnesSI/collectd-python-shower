@@ -115,6 +115,7 @@ class DataTextFSM(Data):
 
     def _textfsm_to_dict(self, tfsm):
         results = {}
+        self.log('info', 'TextFSM result: {}'.format(repr(tfsm._result)))
         # Convert TextFSM object to list of dictionaries (by Kirk Byers)
         temp_dict = None
         for row in tfsm._result:
@@ -124,7 +125,7 @@ class DataTextFSM(Data):
                 if header == 'type_instance':
                     results[str(element)] = temp_dict
                 else:
-                    temp_dict[header] = float(element)
+                    temp_dict[header] = element
         if not results and temp_dict:
             # if no Variable named type_instance, only one record returned
             # place it under key '0'
