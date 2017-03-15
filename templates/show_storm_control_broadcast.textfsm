@@ -1,27 +1,27 @@
-# Command: show storm-control multicast
+# Command: show storm-control broadcast
 #
 # You'll need to add the following to collectd's types.db:
 #
-# # shower / show_storm_control_multicast.textfsm
+# # shower / show_storm_control_broadcast.textfsm
 # upper                   value:GAUGE:0:U
 # lower                   value:GAUGE:0:U
 # current                 value:GAUGE:0:U
 #
-Value iface (\S+)
+Value type_instance (\S+)
 Value upper (\S+)
 Value lower (\S+)
 Value current (\S+)
 
 Start
-  ^${iface}\s+.*\s+${upper}\s+bps\s+${lower}\s+bps\s+${current}\s+bps.* -> Record
+  ^${type_instance}\s+.*\s+${upper}\s+bps\s+${lower}\s+bps\s+${current}\s+bps.* -> Record
 
 ################################################################################
 # Sample output:
 #
-#  show storm-control multicast 
+#  show storm-control broadcast 
 #  Interface  Filter State   Upper        Lower        Current
 #  ---------  -------------  -----------  -----------  ----------
-#  Gi1/0/1    Forwarding         10m bps      10m bps      665 bps
+#  Gi1/0/1    Forwarding         10m bps      10m bps        0 bps
 #  Gi1/0/2    Forwarding         10m bps      10m bps        0 bps
 #  Gi1/0/3    Link Down          10m bps      10m bps        0 bps
 #  Gi1/0/4    Link Down          10m bps      10m bps        0 bps
@@ -36,7 +36,7 @@ Start
 #  Gi1/0/13   Forwarding         10m bps      10m bps        0 bps
 #  Gi1/0/14   Forwarding         10m bps      10m bps        0 bps
 #  Gi1/0/15   Link Down          10m bps      10m bps        0 bps
-#  Gi1/0/16   Forwarding         10m bps      10m bps      665 bps
+#  Gi1/0/16   Forwarding         10m bps      10m bps        0 bps
 #  Gi1/0/17   Link Down          10m bps      10m bps        0 bps
 #  Gi1/0/18   Link Down          10m bps      10m bps        0 bps
 #  Gi1/0/19   Link Down          10m bps      10m bps        0 bps
@@ -45,6 +45,6 @@ Start
 #  Gi1/0/22   Link Down          10m bps      10m bps        0 bps
 #  Gi1/0/23   Link Down          10m bps      10m bps        0 bps
 #  Gi1/0/24   Link Down          10m bps      10m bps        0 bps
-#  Gi1/0/25   Forwarding         10m bps      10m bps   73.08k bps
+#  Gi1/0/25   Forwarding         10m bps      10m bps   31.47k bps
 #  Gi1/0/26   Link Down          10m bps      10m bps        0 bps
-#  Te1/0/2    Forwarding        0.01%        0.01%        0.00% 
+#  Te1/0/2    Forwarding        0.01%        0.01%        0.00%
