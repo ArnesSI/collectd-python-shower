@@ -37,7 +37,7 @@ class Host(ShowerBase):
         super(Host, self).__init__()
         self.name = str(conf.values[0])
         self.address = None
-        self.type = None
+        self.hosttype = None
         self.collect = []
         self.username = None
         self.password = None
@@ -57,7 +57,7 @@ class Host(ShowerBase):
             setattr(self, key, value)
         for node in conf.children:
             key = node.key.lower()
-            if key in ['type', 'address', 'username', 'password']:
+            if key in ['hosttype', 'address', 'username', 'password']:
                 setattr(self, key, str(node.values[0]))
             elif key in ['collect']:
                 setattr(self, key, node.values)
@@ -73,8 +73,8 @@ class Host(ShowerBase):
         if self.address is None:
             self.address = self.name
         # TODO ssh_key checking/loading
-        if self.type not in netmiko_platforms:
-            raise ShowerConfigException('Device type "{}" not supported by netmiko [{}]'.format(self.type, self.name))
+        if self.hosttype not in netmiko_platforms:
+            raise ShowerConfigException('Device type "{}" not supported by netmiko [{}]'.format(self.hosttype, self.name))
         if self.interval < 1 or self.interval < self.global_interval or self.interval % self.global_interval:
             raise ShowerConfigException('Device interval "{}" must be a multiple fo globl interval'.format(self.interval))
 
@@ -83,7 +83,7 @@ class Host(ShowerBase):
         start = time.time()
         try:
             self.connection = ConnectHandler(
-                device_type = self.type,
+                device_type = self.hosttype,
                 ip = self.address,
                 username = self.username,
                 password = self.password,
