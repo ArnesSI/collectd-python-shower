@@ -26,9 +26,9 @@
 
 
 def multiplier2int(n):
-    ''' primer dobi 10k, vrne 10000 '''
-    pos_postfixes = ['k', 'm', 'G', 'T', 'P', 'E', 'Z', 'Y']
-    neg_postfixes = ['M', 'µ', 'n', 'p', 'f', 'a', 'z', 'y']
+    ''' Example: 10k becomes 10000 '''
+    pos_postfixes = [u'k', u'm', u'G', u'T', u'P', u'E', u'Z', u'Y']
+    neg_postfixes = [u'M', u'µ', u'n', u'p', u'f', u'a', u'z', u'y']
     num_postfix = n[-1]
     if num_postfix in pos_postfixes:
         num = float(n[:-1])
