@@ -97,10 +97,6 @@ class DataTextFSM(Data):
             raise
         try:
             self._textfsm = textfsm.TextFSM(open(self.template_fullpath))
-            if 'type_instance' in self._textfsm.header:
-                # if we have a special Value called type_instance, we expect to
-                # have a table of results
-                self.table = True
         except textfsm.TextFSMTemplateError as e:
             self.log('error', 'TextFSMTemplateError "{}" while parsing TextFSM template "{}" in Data "{}"'.format(e, self.template_fullpath, self.name))
             raise
@@ -122,13 +118,13 @@ class DataTextFSM(Data):
             temp_dict = {}
             for index, element in enumerate(row):
                 header = tfsm.header[index].lower()
-                if header == 'type_instance':
+                if self.table and self.typeinstance and header == self.typeinstance.lower():
                     results[str(element)] = temp_dict
                 else:
                     temp_dict[header] = element
-        if not results and temp_dict:
-            # if no Variable named type_instance, only one record returned
-            # place it under key '0'
+        if not self.table and temp_dict:
+            # if TypeInstance not in configuration, assume only one record will
+            # be returned -> place it under key '0'
             results['0'] = temp_dict
         if self.typeoverride:
             # if user set TypeOverride in the config, we can only support one

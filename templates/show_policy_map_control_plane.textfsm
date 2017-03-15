@@ -11,7 +11,7 @@
 # exceeded_bytes          value:DERIVE:0:U
 # exceeded_bps            value:GAUGE:0:U
 #
-Value type_instance (\S+)
+Value class_map (\S+)
 Value packets (\d+)
 Value cir_bps (\d+)
 Value bc_bytes (\d+)
@@ -22,7 +22,7 @@ Value exceeded_bps (\d+)
 
 
 Start
-  ^\s+Class-map: ${type_instance} \(.*\)
+  ^\s+Class-map: ${class_map} \(.*\)
   ^\s+${packets} packets
   ^\s+Match: access-group name .*
   ^\s+police:

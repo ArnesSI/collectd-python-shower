@@ -1,7 +1,7 @@
-Value type_instance (\S+)
+Value iface (\S+)
 Value upper (\S+)
 Value lower (\S+)
 Value current (\S+)
 
 Start
-  ^${type_instance}\s+.*\s+${upper}\s+bps\s+${lower}\s+bps\s+${current}\s+bps.* -> Record
+  ^${iface}\s+.*\s+${upper}\s+bps\s+${lower}\s+bps\s+${current}\s+bps.* -> Record
