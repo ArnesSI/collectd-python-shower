@@ -50,7 +50,7 @@ class Data(ShowerBase):
             if key in ['style', 'plugininstance', 'typeinstance']:
                 setattr(self, key, str(node.values[0]))
             elif key in ['types']:
-                setattr(self, key, node.values)
+                setattr(self, key, [t.lower() for t in node.values])
             elif key in ['table', 'verbose', 'debug']:
                 setattr(self, key, bool(node.values[0]))
             elif key == 'formatter':

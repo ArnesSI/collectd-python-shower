@@ -120,6 +120,9 @@ class DataTextFSM(Data):
                 header = tfsm.header[index].lower()
                 if self.table and self.typeinstance and header == self.typeinstance.lower():
                     results[str(element)] = temp_dict
+                elif self.types and header not in self.types:
+                    # this is a field we do not want
+                    continue
                 else:
                     temp_dict[header] = element
         if not self.table and temp_dict:
