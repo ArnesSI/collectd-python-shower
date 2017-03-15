@@ -7,18 +7,18 @@
 # lower                   value:GAUGE:0:U
 # current                 value:GAUGE:0:U
 #
-Value type_instance (\S+)
+Value iface (\S+)
 Value upper (\S+)
 Value lower (\S+)
 Value current (\S+)
 
 Start
-  ^${type_instance}\s+.*\s+${upper}\s+bps\s+${lower}\s+bps\s+${current}\s+bps.* -> Record
+  ^${iface}\s+.*\s+${upper}\s+bps\s+${lower}\s+bps\s+${current}\s+bps.* -> Record
 
 ################################################################################
 # Sample output:
 #
-#  show storm-control broadcast 
+#  show storm-control broadcast
 #  Interface  Filter State   Upper        Lower        Current
 #  ---------  -------------  -----------  -----------  ----------
 #  Gi1/0/1    Forwarding         10m bps      10m bps        0 bps
