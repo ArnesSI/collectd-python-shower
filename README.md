@@ -19,7 +19,7 @@ pip install netmiko textfsm
 
 ## Installation
 
-Clone this repository into a folder of your choice. The following example will place the plugin into ``/opt/collectd-python-shower`.
+Clone this repository into a folder of your choice. The following example will place the plugin into `/opt/collectd-python-shower`.
 
 ```
 cd /opt
