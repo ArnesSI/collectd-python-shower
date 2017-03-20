@@ -10,7 +10,7 @@ You should pronounce it as show-er. You know, because it works with show command
 * [Netmiko](https://github.com/ktbyers/netmiko)
 * [TextFSM](https://github.com/google/textfsm) (optional)
 
-On CentOS 7 with EPEL repository enabled the you can run the following:
+On CentOS 7 with EPEL repository enabled you can run the following:
 
 ```
 yum install collectd-python
@@ -19,7 +19,7 @@ pip install netmiko textfsm
 
 ## Installation
 
-Clone this repository into a folder of your choice. The following example will place the plugin into /opt/collectd-python-shower.
+Clone this repository into a folder of your choice. The following example will place the plugin into ``/opt/collectd-python-shower`.
 
 ```
 cd /opt
@@ -28,7 +28,7 @@ git clone https://github.com/ArnesSI/collectd-python-shower.git
 
 ## Configuration
 
-```
+```Apache
 <LoadPlugin python>
     Globals true
 </LoadPlugin>
@@ -63,15 +63,15 @@ git clone https://github.com/ArnesSI/collectd-python-shower.git
 
 Make sure you have Python support enabled in collectd:
 
-```
+```Apache
 <LoadPlugin python>
     Globals true
 </LoadPlugin>
 ```
 
-Tell collectd where to find and to load shower plugin:
+Tell collectd where to find shower plugin and to load it:
 
-```
+```Apache
 <Plugin "python">
     ModulePath "/opt/collectd-python-shower"
     Import "shower"
@@ -82,7 +82,7 @@ You can have multiple [ModulePath](https://collectd.org/documentation/manpages/c
 
 All configuration for the plugin goes into the `<Module "shower">` section.
 
-The way you configure shower is similar to collectd's [SNMP plugin](https://collectd.org/documentation/manpages/collectd-snmp.5.shtml). You define one or more Data sections. These define the show commands to be run on hosts and how to parse the output. Then you define `Host` blocks for your devices and associate `Data` blocks to hosts with `Collect` statements.
+The way you configure shower is similar to collectd's [SNMP plugin](https://collectd.org/documentation/manpages/collectd-snmp.5.shtml). You define one or more Data sections. These define the show commands to be run and how to parse the output. Then you define `Host` blocks for your devices and associate `Data` blocks to hosts with `Collect` statements.
 
 Shower global configuration options:
 
@@ -93,6 +93,15 @@ Send info and debug level logs from shower to collectd.
 ### Workers *Num*
 
 How many parallel threads should collectd use for reading data from hosts. This value should probably be lower than `ReadThreads` setting in global [collectd configuration](https://collectd.org/documentation/manpages/collectd.conf.5.shtml).
+
+Internally shower will split hosts equally across all workers. Each worker must complete parsing all its hosts within `Interval` seconds. Otherwise collectd will complain in its log file:
+
+```
+[2017-03-13 10:46:23] [warning] plugin_read_thread: read-function of the `python.shower_6' plugin took 12.256 seconds, which is above
+ its read interval (10.000 seconds). You might want to adjust the `Interval' or `ReadThreads' settings.
+ ```
+
+In such cases you'll want to increase the `Interval` or `Workers`.
 
 ### Interval *Seconds*
 
@@ -253,7 +262,7 @@ CPU utilization for five seconds: 15%/0%; one minute: 16%; five minutes: 15%
 We want to parse utilization for each time window.
 
 shower data config:
-```
+```Apache
 <Data "cisco_ios_cpu_single">
     Style "regex"
     PluginInstance "cpu"
@@ -291,7 +300,7 @@ Core 1: CPU utilization for five seconds: 1%; one minute: 3%; five minutes: 3%
 We want to parse utilization for each time window for each core.
 
 shower data config:
-```
+```Apache
 <Data "cisco_ios_cpu_multi">
     Style "regex"
     PluginInstance "cpu"
@@ -372,7 +381,7 @@ Sample output:
 We want to parse all the metrics for each class-map.
 
 shower data config:
-```
+```Apache
 <Data "cisco_ios_copp">
     Style "textfsm"
     Table true
