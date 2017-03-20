@@ -191,7 +191,7 @@ If for example you extracted 12.4k you can apply multiplier2int formatter to cha
 
 You can specify multiple `Formatter` lines - one for each field to format.
 
-See Writing formatters to learn how to make your own formating function.
+See [Value formatting](#formatting) to learn how to make your own formating function.
 
 #### Verbose *true|false*
 
@@ -279,7 +279,7 @@ cpu_1min                value:GAUGE:0:100
 cpu_5min                value:GAUGE:0:100
 ```
 
-Rresulting collectd metrics:
+Resulting collectd metrics:
 ```
 <host>/shower-<PluginInstance>/<Type>
 
@@ -319,7 +319,7 @@ cpu_1min                value:GAUGE:0:100
 cpu_5min                value:GAUGE:0:100
 ```
 
-Rresulting collectd metrics:
+Resulting collectd metrics:
 ```
 <host>/shower-<PluginInstance>/<Type>-<TypeInstance>
 
@@ -427,7 +427,7 @@ exceeded_bytes          value:DERIVE:0:U
 exceeded_bps            value:GAUGE:0:U
 ```
 
-Rresulting collectd metrics:
+Resulting collectd metrics:
 ```
 <host>/shower-<PluginInstance>/<TextFSM_Value>-<TypeInstance>
 
@@ -440,6 +440,76 @@ myrouter/shower-copp/cir_bps-class-default
 ...
 ```
 
+#### Get MAC address statistics from Cisco IOS.
+
+Command: `show mac address-table count`
+Sample output:
+```
+MAC Entries for all vlans:
+Dynamic Unicast Address Count:                  9
+Static Unicast Address (User-defined) Count:    0
+Static Unicast Address (System-defined) Count:  6
+Total Unicast MAC Addresses In Use:             15
+Total Unicast MAC Addresses Available:          55000
+Multicast MAC Address Count:                    8
+Total Multicast MAC Addresses Available:        32768
+```
+
+We want to parse MAC address stats, but don't want to pollute collectd's types with multiple new type definitions that will only be used once.
+
+shower data config:
+```Apache
+<Data "cisco_ios_mac">
+    Style "textfsm"
+    Table false
+    PluginInstance "mac"
+    TypeOverride "count"
+    Template "show_mac_address-table_count.textfsm"
+</Data>
+```
+
+TextFSM template:
+```
+Value unicast_dynamic (\d+)
+Value unicast_static_user (\d+)
+Value unicast_static_system (\d+)
+Value unicast_used (\d+)
+Value unicast_total (\d+)
+Value multicast_used (\d+)
+Value multicast_total (\d+)
+
+
+Start
+ ^MAC Entries for all vlans:.*
+ ^Dynamic Unicast Address Count:\s+${unicast_dynamic}
+ ^Static Unicast Address (User-defined) Count:\s+${unicast_static_user}
+ ^Static Unicast Address (System-defined) Count:\s+${unicast_static_system}
+ ^Total Unicast MAC Addresses In Use:\s+${unicast_used}
+ ^Total Unicast MAC Addresses Available:\s+${unicast_total}
+ ^Multicast MAC Address Count:\s+${multicast_used}
+ ^Total Multicast MAC Addresses Available:\s+${multicast_total}
+```
+
+collectd types.db:
+```
+count                   value:GAUGE:0:U
+```
+
+Resulting collectd metrics:
+```
+<host>/shower-<PluginInstance>/<TextFSM_Value>-<TypeInstance>
+
+myrouter/shower-mac/count-unicast_dynamic
+myrouter/shower-mac/count-unicast_static_user
+myrouter/shower-mac/count-unicast_static_system
+myrouter/shower-mac/count-unicast_used
+myrouter/shower-mac/count-unicast_total
+myrouter/shower-mac/count-multicast_used
+myrouter/shower-mac/count-multicast_total
+...
+```
+
+Resulting collectd metrics:
 
 ### Using ntc-templates
 
@@ -453,10 +523,20 @@ There is one exception - when using textfsm style parsing and you set TypeOverri
 
 ## <a name="formatting"></a>Value formatting
 
-TODO
+Sometimes the values in output are not pure numbers but might contain some prefixes such as 5Gbit/s or 100kbit/s. You can use Formatter configuration options to translate these values into normal numbers.
+
+The following formatting functions are available:
+
+### multiplier2int
+
+Converts SI metric prefixes. 1.5k becomes 1500, 100m becomes 0.1.
+
+### Writing your own
+
+You'll need to write a function in `formatters.py`. The function takes the value as parsed by TextFSM template or captured by regex and must return a float.
 
 ## Contributing
 
-Any suggestions, issues, bug reports or improvements are welcome. Use GitHub's issue tracker for that.
+Any suggestions, issues, bug reports or improvements are welcome. Use GitHub's [issue tracker](https://github.com/ArnesSI/collectd-python-shower/issues) for that.
 
-Especially welcome are pull requests with additional templates.
+Especially welcome are pull requests with additional templates or formatters :)
