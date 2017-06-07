@@ -56,7 +56,7 @@ class DataRegex(Data):
         if self.table:
             parsed = self._parse_by_line(output)
             for row in parsed:
-                self._add_to_results(results, row[self.typeinstance], row)
+                self._add_to_results(results, row['_'.join(self.typeinstance)], row)
         else:
             parsed = self._parse_line(output)
             self._add_to_results(results, '0', parsed)

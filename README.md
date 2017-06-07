@@ -139,11 +139,11 @@ Define if this is a single list of values or a table of values.
 
 When Table is set to false only a single instance of fields defined will be extracted. For example 5 second, 1 minute and 5 minute CPU utilization of a router with a single one-core CPU.
 
-When Table is set to true you also need to set TypeInstance to a name of the field whose values will be used as a collectd's TypeInstance. This is useful if you want to extract some counters for each interface on a switch for example.
+When Table is set to true you also need to set TypeInstance to names of fields whose values will be used as a collectd's TypeInstance. This is useful if you want to extract some counters for each interface on a switch for example. If you give more than one field all values will be concatenated into a single TypeInstance.
 
-#### TypeInstance *Field*
+#### TypeInstance *Field* [*Field*]
 
-Which field to use for collectd's TypeInstance. See `Table` above for a detailed explanation.
+Which fields to use for collectd's TypeInstance. See `Table` above for a detailed explanation.
 
 #### Types *Field* [*Field*]
 

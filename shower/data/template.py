@@ -115,16 +115,19 @@ class DataTextFSM(Data):
         # Convert TextFSM object to list of dictionaries (by Kirk Byers)
         temp_dict = None
         for row in tfsm._result:
+            typeinstance_values = [None] * len(self.typeinstance)
             temp_dict = {}
             for index, element in enumerate(row):
                 header = tfsm.header[index].lower()
-                if self.table and self.typeinstance and header == self.typeinstance.lower():
-                    results[str(element)] = temp_dict
+                if self.table and self.typeinstance and header in self.typeinstance:
+                    typeinstance_values[self.typeinstance.index(header)] = str(element)
                 elif self.types and header not in self.types:
                     # this is a field we do not want
                     continue
                 else:
                     temp_dict[header] = element
+            assert None not in typeinstance_values
+            results['_'.join(typeinstance_values)] = temp_dict
         if not self.table and temp_dict:
             # if TypeInstance not in configuration, assume only one record will
             # be returned -> place it under key '0'

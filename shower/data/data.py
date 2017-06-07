@@ -47,9 +47,9 @@ class Data(ShowerBase):
         self.name = conf.values[0]
         for node in conf.children:
             key = node.key.lower()
-            if key in ['style', 'plugininstance', 'typeinstance']:
+            if key in ['style', 'plugininstance']:
                 setattr(self, key, str(node.values[0]))
-            elif key in ['types']:
+            elif key in ['types', 'typeinstance']:
                 setattr(self, key, [t.lower() for t in node.values])
             elif key in ['table', 'verbose', 'debug']:
                 setattr(self, key, bool(node.values[0]))
