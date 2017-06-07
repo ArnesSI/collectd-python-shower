@@ -1,0 +1,74 @@
+# Command: show policy-map control-plane
+#
+# You'll need to add the following to collectd's types.db:
+#
+# # shower / show_policy_map_control_plane.textfsm
+# packets                 value:DERIVE:0:U
+# cir_bps                 value:GAUGE:0:U
+# bc_bytes                value:DERIVE:0:U
+# conformed_bytes         value:DERIVE:0:U
+# conformed_bps           value:GAUGE:0:U
+# exceeded_bytes          value:DERIVE:0:U
+# exceeded_bps            value:GAUGE:0:U
+#
+Value Filldown class_map (\S+)
+Value Required conformed_bytes (\d+)
+Value conformed_bps (\d+)
+Value exceeded_bytes (\d+)
+Value exceeded_bps (\d+)
+Value hw_slot (\d+)
+
+Start 
+  ^\s+class-map: ${class_map}
+  ^\s+Earl in slot ${hw_slot}
+  ^\s+aggregate-forwarded ${conformed_bytes} bytes action:
+  ^\s+exceeded ${exceeded_bytes} bytes action:
+  ^\s+aggregate-forward ${conformed_bps} bps exceed ${exceeded_bps} bps -> Record
+
+################################################################################
+# Sample output:
+#
+#  Hardware Counters: 
+#
+#    class-map: class-default (match-any)
+#      Match: any 
+#      police :
+#        10000000 bps 312500 limit 312500 extended limit
+#      Earl in slot 2 :
+#        7346072763 bytes
+#        5 minute offered rate 2728 bps
+#        aggregate-forwarded 5778473350 bytes action: transmit
+#        exceeded 1567599413 bytes action: drop
+#        aggregate-forward 2728 bps exceed 0 bps 
+#      Earl in slot 4 :
+#        9719021255 bytes
+#        5 minute offered rate 5904 bps
+#        aggregate-forwarded 9687845353 bytes action: transmit
+#        exceeded 31175902 bytes action: drop
+#        aggregate-forward 4920 bps exceed 0 bps 
+#      Earl in slot 6 :
+#        5193685755 bytes
+#        5 minute offered rate 3968 bps
+#        aggregate-forwarded 5174063266 bytes action: transmit
+#        exceeded 19622489 bytes action: drop
+#        aggregate-forward 3256 bps exceed 0 bps 
+#      Earl in slot 7 :
+#        55262035734 bytes
+#        5 minute offered rate 41440 bps
+#        aggregate-forwarded 55167039902 bytes action: transmit
+#        exceeded 94995832 bytes action: drop
+#        aggregate-forward 20976 bps exceed 0 bps 
+#
+#  Software Counters: 
+#
+#    Class-map: class-default (match-any)  
+#      759565360 packets, 71684003486 bytes
+#      5 minute offered rate 43000 bps, drop rate 0000 bps
+#      Match: any 
+#      police:
+#          cir 10000000 bps, bc 312500 bytes
+#        conformed 759565194 packets, 71683892493 bytes; actions:
+#          transmit 
+#        exceeded 168 packets, 110993 bytes; actions:
+#          drop 
+#        conformed 36000 bps, exceed 0000 bps
