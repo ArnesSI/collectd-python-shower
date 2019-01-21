@@ -1,0 +1,92 @@
+# Command: show platform cpu packet statistics
+# TypeInstance "name"
+#
+# You'll need to add the following to collectd's types.db:
+#
+# # shower / show_platform_cpu_packet_statistics_4500X.textfsm
+# total    value:DERIVE:0:U
+# i5sec    value:GAUGE:0:U
+# i1min    value:GAUGE:0:U
+# i5min    value:GAUGE:0:U
+# i1hour   value:GAUGE:0:U
+Value name ([^\s*].*[^\s*])
+Value total (\d+)
+Value i5sec (\d+)
+Value i1min (\d+)
+Value i5min (\d+)
+Value i1hour (\d+)
+
+Start 
+  ^${name}\s+${total}\s+${i5sec}\s+${i1min}\s+${i5min}\s+${i1hour} -> Record
+
+################################################################################
+# Sample output:
+#
+#
+# RkGenericPacketMan:
+# Packet allocation failures: 0
+# Packet Buffer(SW Common) allocation failures: 0
+# Packet Buffer(SW ESMP) allocation failures: 0
+# Packet Buffer(SW EOBC) allocation failures: 0
+# Packet Buffer(SW SupToSup) allocation failures: 0
+# 
+# Packets Dropped In Processing Overall
+# 
+# Total                5 sec avg 1 min avg 5 min avg 1 hour avg
+# -------------------- --------- --------- --------- ----------
+#             19943631        17         9        10          4
+# 
+# Packets Dropped In Processing by CPU event
+# 
+# Event             Total                5 sec avg 1 min avg 5 min avg 1 hour avg
+# ----------------- -------------------- --------- --------- --------- ----------
+# Sa Miss                          70585         0         0         0          0
+# Input ACl Copy                  175887         0         0         0          0
+# Output Acl Fwd                       7         0         0         0          0
+# Output Acl Copy               19697152        16         9         9          3
+# 
+# Packets Dropped In Processing by Priority
+# 
+# Priority          Total                5 sec avg 1 min avg 5 min avg 1 hour avg
+# ----------------- -------------------- --------- --------- --------- ----------
+# Normal                        19868823        16         9        10          4
+# Medium                           71009         0         0         0          0
+# High                              3755         0         0         0          0
+# Crucial                             44         0         0         0          0
+# 
+# Packets Dropped In Processing by Reason
+# 
+# Reason             Total                5 sec avg 1 min avg 5 min avg 1 hour avg
+# ------------------ -------------------- --------- --------- --------- ----------
+# AclActionDrop                   4843755         2         0         0          0
+# NoDstPorts                     14853403        12         6         6          2
+# Tx Mode Drop                     246473         0         0         0          0
+# 
+# Total packet queues 64
+# 
+# Packets Received by Packet Queue
+# 
+# Queue                  Total           5 sec avg 1 min avg 5 min avg 1 hour avg
+# ---------------------- --------------- --------- --------- --------- ----------
+# Host Learning                    70584         0         0         0          0
+# L2 Control                    18053041         8         0         0          0
+# Input ACL log, unreach          200477         0         0         0          0
+# L3 Glean                      95157329        36        24        21         22
+# Ip Option                           96         0         0         0          0
+# L3 Receive                   107788399        28        17        16         12
+# Ttl Expired                      10586         0         0         0          0
+# Output ACL fwd(snooping)       273504289       254      1051       654        332
+# Output ACL log, unreach        19696537        15         9         9          3
+# Bfd                                  7         0         0         0          0
+# Ipv6 Scope Check Fail             3945         0         0         0          0
+# L2 router to CPU, 7           49763961        45        37        29         23
+# L3 Fwd                          243496         0         0         0          0
+# 
+# Packets Dropped by Packet Queue
+# 
+# Queue                  Total           5 sec avg 1 min avg 5 min avg 1 hour avg
+# ---------------------- --------------- --------- --------- --------- ----------
+# L3 Glean                            96         0         0         0          0
+# Output ACL fwd(snooping)         6307922         0         3         4          0
+# Output ACL log, unreach            4731         0         0         0          0
+#
